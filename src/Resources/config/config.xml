@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/shopware/platform/master/src/Core/System/SystemConfig/Schema/config.xsd">
+
+    <card>
+        <title>Settings</title>
+        <title lang="de-DE">Konfiguration</title>
+        <title lang="fr-FR">Configuration</title>
+
+        <input-field type="bool">
+            <name>WeloDeliveryInfo6Activated</name>
+            <label lang="de-DE">Plugin aktivieren</label>
+            <label lang="en-GB">Activate the plugin</label>
+            <label lang="fr-FR">Activer le plugin</label>
+        </input-field>
+
+        <input-field type="textarea">
+            <name>WeloDeliveryInfo6Data</name>
+            <label lang="en-GB">Informations (one line per entry)</label>
+            <label lang="de-DE">Informationen (eine Zeile pro Eingabe)</label>
+            <label lang="fr-FR">Informations (une ligne par entrée)</label>
+            <value>Lieferzeit ca. 1-3 Werktage
+                Kostenloser Rückversand
+                60 Tage Rückgaberecht
+                Versand mit DHL
+                Lieferungen innerhalb der EU
+                Lieferungen innerhalb Deutschlands
+                Versandkosten pauschal 6,95 €
+                Lieferung innerhalb von ca. 2-4 Werktagen nach Zahlung
+            </value>
+        </input-field>
+
+    </card>
+</config>
