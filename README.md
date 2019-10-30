@@ -11,13 +11,15 @@
 
 ### Description
 
-    The plugin allows you to give your customers delivery information about the item directly on the item detail page. The information can relate specifically  to each article.
+    The plugin allows you to give your customers delivery information about the item directly on the item 
+    detail page. The information can relate specifically  to each article.
     The information can be saved in
     
         the backend of the product detail page
         the plugin configuration
         
-    If no information is entered on the detail page, the information from the plugin configuration is used as default.
+    If no information is entered on the detail page, the information from the plugin configuration 
+    is used as default.
     
     In the plugin configuration the following is set:
     
@@ -39,5 +41,5 @@
     French
 
 ### Questions about the product?
-    For improvement suggestions or individual adjustments that can not be reproduced with the plugin Feel free to contact us via email at 
-    shopware@webloupe.de 
+    For improvement suggestions or individual adjustments that can not be reproduced with the plugin Feel 
+    free to contact us via email at shopware@webloupe.de 
