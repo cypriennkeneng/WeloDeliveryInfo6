@@ -36,7 +36,18 @@ class ProductSubscriber implements EventSubscriberInterface
      */
     public function onProductPageLoaded(ProductPageLoadedEvent $event): void
     {
-        $weloDeliveryInfo6rmation = $this->configuration->getDeliveryInfo6rmation($event->getPage()->getProduct()->getId());
-        $event->getPage()->getProduct()->assign(['weloDeliveryInfo6rmation' => $weloDeliveryInfo6rmation]);
+        $this->dumb($event->getPage()->getProduct()->getCustomFields());
+        $weloDeliveryInformation = $this->configuration->getDeliveryInformation($event->getPage()->getProduct());
+        $event->getPage()->getProduct()->assign(['weloDeliveryInformation' => $weloDeliveryInformation]);
+    }
+    
+    /**
+     * Helper method for debugging
+     * @param $data
+     */
+    function dumb($data){
+        highlight_string("<?php\n " . var_export($data, true) . "?>");
+        echo '<script>document.getElementsByTagName("code")[0].getElementsByTagName("span")[1].remove() ;document.getElementsByTagName("code")[0].getElementsByTagName("span")[document.getElementsByTagName("code")[0].getElementsByTagName("span").length - 1].remove() ; </script>';
+        die();
     }
 }

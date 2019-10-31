@@ -1,6 +1,7 @@
 <?php
 namespace Welo\DeliveryInfo6\Service;
 
+use Shopware\Core\Content\Product\SalesChannel\SalesChannelProductEntity;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 
 /**
@@ -38,17 +39,22 @@ class Configuration
     }
     
     /**
-     * @param int $articleDetailsId
+     * @param \Shopware\Core\Content\Product\SalesChannel\SalesChannelProductEntity $productEntity
      * @return array|string
      * @throws \Exception
      */
-    public function getDeliveryInfo6rmation($articleDetailsId = 0)
+    public function getDeliveryInformation(SalesChannelProductEntity $productEntity = null)
     {
-        error_log(__METHOD__.'::'.__LINE__.'::$articleDetailsId> '.print_r($articleDetailsId, true));
         $deliveryData = [];
-        if (0 === $articleDetailsId) {
+        if (null === $productEntity) {
             return [];
         }
+    
+        $customFields = $productEntity->getCustomFields();
+        
+        $customFields['welo']['welo_delivery_information'];
+        $this->dumb($productEntity->getId());
+        
         
         if (true === empty($deliveryData)) {
             $deliveryData = $this->getConfigByKey(self::WELODeliveryInfo6DATA);
