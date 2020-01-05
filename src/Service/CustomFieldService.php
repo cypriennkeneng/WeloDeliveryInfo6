@@ -5,13 +5,13 @@ namespace Welo\DeliveryInfo6\Service;
 use Exception;
 use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\CustomField\CustomFieldTypes;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Plugin\Context\ActivateContext;
 use Shopware\Core\Framework\Plugin\Context\DeactivateContext;
 use Shopware\Core\Framework\Plugin\Context\InstallContext;
 use Shopware\Core\Framework\Plugin\Context\UninstallContext;
 use Shopware\Core\Framework\Plugin\Context\UpdateContext;
+use Shopware\Core\System\CustomField\CustomFieldTypes;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class CustomFieldService
@@ -21,10 +21,10 @@ class CustomFieldService
 
     /** @var EntityRepository */
     protected $customFieldSetRepository;
-    
+
     /** @var string */
     protected $customFieldSetId;
-    
+
     /**
      * CustomFieldService constructor.
      *
@@ -39,32 +39,32 @@ class CustomFieldService
         $this->customFieldSetRepository = $customFieldSetRepository;
         $this->customFieldSetId = 'cfc5bddd41594779a00cd4aa31885530';
     }
-    
+
     public function install(InstallContext $context): void
     {
         $this->upsertCustomField($context->getContext());
     }
-    
+
     public function update(UpdateContext $context): void
     {
         $this->upsertCustomField($context->getContext());
     }
-    
+
     public function uninstall(UninstallContext $context): void
     {
         $this->deactivateCustomField($context->getContext());
     }
-    
+
     public function activate(ActivateContext $context): void
     {
         $this->upsertCustomField($context->getContext());
     }
-    
+
     public function deactivate(DeactivateContext $context): void
     {
         $this->deactivateCustomField($context->getContext());
     }
-    
+
     public function upsertCustomField(Context $context)
     {
         try {
@@ -105,7 +105,7 @@ class CustomFieldService
             // @todo Handle Exception
         }
     }
-    
+
     public function deactivateCustomField(Context $context)
     {
         try {

@@ -7,7 +7,7 @@ use Shopware\Core\System\SystemConfig\SystemConfigService;
 /**
  * Class Config
  *
- * @author Steven Thorne <shopware@webloupe.de>
+ * @author Cyprien Nkeneng <shopware@webloupe.de>
  * @copyright Copyright (c) 2017-2019 Web Loupe
  * @package DeliveryInfo6\Service
  * @version   1
@@ -18,9 +18,9 @@ class Configuration
      * @var \Shopware\Core\System\SystemConfig\SystemConfigService
      */
     private $systemConfigService;
-    
+
     public const WELO_CONFIG_DOMAIN = 'WeloDeliveryInfo6.config.';
-    
+
     const WELODeliveryInfo6DATA = 'WeloDeliveryInfo6Data';
     const WELODeliveryInfo6COLOR = 'WeloDeliveryInfo6Color';
     const WELODeliveryInfo6MARINGINTOP = 'WeloDeliveryInfo6MarginTop';
@@ -28,7 +28,7 @@ class Configuration
     const DEFAULTCOLOR = '#2ecc71';
     const DEFAULTMARGIN = 15;
     const DEFAULTFONTSIZE = 13;
-    
+
     /**
      * Configuration constructor.
      *
@@ -37,7 +37,7 @@ class Configuration
     public function __construct(SystemConfigService $systemConfigService) {
         $this->systemConfigService = $systemConfigService;
     }
-    
+
     /**
      * @param \Shopware\Core\Content\Product\SalesChannel\SalesChannelProductEntity $productEntity
      * @return array|string
@@ -49,21 +49,21 @@ class Configuration
         if (null === $productEntity) {
             return [];
         }
-    
+
         $customFields = $productEntity->getCustomFields();
-        
+
         $customFields['welo']['welo_delivery_information'];
         $this->dumb($productEntity->getId());
-        
-        
+
+
         if (true === empty($deliveryData)) {
             $deliveryData = $this->getConfigByKey(self::WELODeliveryInfo6DATA);
             $deliveryData = array_unique(array_filter(explode(PHP_EOL, trim($deliveryData))));
         }
-        
+
         return $deliveryData;
     }
-    
+
     /**
      * @param $key
      * @return bool|mixed
@@ -73,7 +73,7 @@ class Configuration
     {
         return $this->systemConfigService->get(self::WELO_CONFIG_DOMAIN . $key);
     }
-    
+
     /**
      * Helper method for debugging
      * @param $data

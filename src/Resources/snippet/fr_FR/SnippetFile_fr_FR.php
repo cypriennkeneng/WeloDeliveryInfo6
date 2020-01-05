@@ -2,7 +2,7 @@
 
 namespace Welo\DeliveryInfo6\Resources\snippet\fr_FR;
 
-use Shopware\Core\Framework\Snippet\Files\SnippetFileInterface;
+use Shopware\Core\System\Snippet\Files\SnippetFileInterface;
 
 class SnippetFile_fr_FR implements SnippetFileInterface
 {
