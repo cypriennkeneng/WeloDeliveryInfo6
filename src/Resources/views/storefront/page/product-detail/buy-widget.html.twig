@@ -3,12 +3,12 @@
 {% block page_product_detail_ordernumber_container %}
     {{ parent() }}
 
-    {% if page.product.weloDeliveryInformation %}
+    {% if page.product.weloDeliveryInformation.active %}
         {% block welo_delivery_info_frontend_detail_delivery_information %}
             <div class="row product-detail-ordernumber-container">
-                <ul style="list-style: none; margin-top: 11px; font-size: 11px;">
-                    {% for item in page.product.weloDeliveryInformation %}
-                        <li><i class="fa fa-check" style="colorx:#fff; padding-right: 8px;"></i>{{ item }}</li>
+                <ul>
+                    {% for item in page.product.weloDeliveryInformation.deliveryData %}
+                        <li>{{ item }}</li>
                     {% endfor %}
                 </ul>
             </div>

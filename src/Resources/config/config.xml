@@ -8,7 +8,7 @@
         <title lang="fr-FR">Configuration</title>
 
         <input-field type="bool">
-            <name>WeloDeliveryInfo6Activated</name>
+            <name>WeloDeliveryInfoActivated</name>
             <label lang="de-DE">Plugin aktivieren</label>
             <label lang="en-GB">Activate the plugin</label>
             <label lang="fr-FR">Activer le plugin</label>
@@ -16,7 +16,7 @@
         </input-field>
 
         <input-field type="textarea">
-            <name>WeloDeliveryInfo6Data</name>
+            <name>WeloDeliveryInfoData</name>
             <label lang="en-GB">Informations (one line per entry)</label>
             <label lang="de-DE">Informationen (eine Zeile pro Eingabe)</label>
             <label lang="fr-FR">Informations (une ligne par entrée)</label>

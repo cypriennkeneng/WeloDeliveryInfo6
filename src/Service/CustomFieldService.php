@@ -11,6 +11,7 @@ use Shopware\Core\Framework\Plugin\Context\DeactivateContext;
 use Shopware\Core\Framework\Plugin\Context\InstallContext;
 use Shopware\Core\Framework\Plugin\Context\UninstallContext;
 use Shopware\Core\Framework\Plugin\Context\UpdateContext;
+use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\System\CustomField\CustomFieldTypes;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -25,6 +26,9 @@ class CustomFieldService
     /** @var string */
     protected $customFieldSetId;
 
+    /** @var string */
+    protected $productFieldId;
+
     /**
      * CustomFieldService constructor.
      *
@@ -37,7 +41,8 @@ class CustomFieldService
     ) {
         $this->container = $container;
         $this->customFieldSetRepository = $customFieldSetRepository;
-        $this->customFieldSetId = 'cfc5bddd41594779a00cd4aa31885530';
+        $this->customFieldSetId = Uuid::randomHex();
+        $this->productFieldId = Uuid::randomHex();
     }
 
     public function install(InstallContext $context): void
@@ -68,27 +73,30 @@ class CustomFieldService
     public function upsertCustomField(Context $context)
     {
         try {
-            $weloProductFieldId = '14cf2e774a67a3b3374b187948046038';
             $this->customFieldSetRepository->upsert([[
                  'id' => $this->customFieldSetId,
                  'name' => 'welo',
                  'config' => [
                      'label' => [
-                         'en-GB' => 'Welo'
-                     ]
+                         'de-DE' => 'Lieferinformationen',
+                         'en-GB' => 'Delivery information',
+                         'fr-FR' => 'Informations sur la livraison'
+                     ],
+                     'translated' => true
                  ],
                 'customFields' => [
                     [
-                        'id' => $weloProductFieldId,
+                        'id' => $this->productFieldId,
                         'name' => 'welo_delivery_information',
                         'type' => CustomFieldTypes::TEXT,
                         'config' => [
                             'componentName' => 'sw-field',
-                            'customFieldType' => 'text',
+                            'customFieldType' => CustomFieldTypes::TEXT,
                             'customFieldPosition' => 1,
                             'label' => [
                                 'en-GB' => 'Delivery information',
-                                'de-DE' => 'Lieferinformationen'
+                                'de-DE' => 'Lieferinformationen',
+                                'fr-FR' => 'Informations sur la livraison'
                             ]
                         ],
                         'active' => true
@@ -96,7 +104,7 @@ class CustomFieldService
                 ],
                 'relations' => [
                     [
-                        'id' => $weloProductFieldId,
+                        'id' => $this->productFieldId,
                         'entityName' => $this->container->get(ProductDefinition::class)->getEntityName()
                     ]
                 ]
@@ -109,27 +117,29 @@ class CustomFieldService
     public function deactivateCustomField(Context $context)
     {
         try {
-            $weloProductFieldId = '14cf2e774a67a3b3374b187948046038';
             $this->customFieldSetRepository->upsert([[
                  'id' => $this->customFieldSetId,
                  'name' => 'welo',
                  'config' => [
                      'label' => [
-                         'en-GB' => 'Welo'
+                         'de-DE' => 'Lieferinformationen',
+                         'en-GB' => 'Delivery information',
+                         'fr-FR' => 'Informations sur la livraison'
                      ]
                  ],
                  'customFields' => [
                      [
-                         'id' => $weloProductFieldId,
+                         'id' => $this->productFieldId,
                          'name' => 'welo_delivery_information',
                          'type' => CustomFieldTypes::TEXT,
                          'config' => [
                              'componentName' => 'sw-field',
-                             'customFieldType' => 'text',
+                             'customFieldType' => CustomFieldTypes::TEXT,
                              'customFieldPosition' => 1,
                              'label' => [
                                  'en-GB' => 'Delivery information',
-                                 'de-DE' => 'Lieferinformationen'
+                                 'de-DE' => 'Lieferinformationen',
+                                 'fr-FR' => 'Informations sur la livraison'
                              ]
                          ],
                          'active' => false
@@ -137,7 +147,7 @@ class CustomFieldService
                  ],
                  'relations' => [
                      [
-                         'id' => $weloProductFieldId,
+                         'id' => $this->productFieldId,
                          'entityName' => $this->container->get(ProductDefinition::class)->getEntityName()
                      ]
                  ]

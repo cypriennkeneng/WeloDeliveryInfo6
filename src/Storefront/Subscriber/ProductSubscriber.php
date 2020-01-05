@@ -9,14 +9,14 @@ use Welo\DeliveryInfo6\Service\Configuration;
 class ProductSubscriber implements EventSubscriberInterface
 {
     /**
-     * @var \Welo\DeliveryInfo6\Service\Configuration
+     * @var Configuration
      */
     private $configuration;
-    
+
     /**
      * ProductSubscriber constructor.
      *
-     * @param \Welo\DeliveryInfo6\Service\Configuration $configuration
+     * @param Configuration $configuration
      */
     public function __construct(Configuration $configuration)
     {
@@ -29,18 +29,19 @@ class ProductSubscriber implements EventSubscriberInterface
             ProductPageLoadedEvent::class => 'onProductPageLoaded'
         ];
     }
-    
+
     /**
-     * @param \Shopware\Storefront\Page\Product\ProductPageLoadedEvent $event
+     * @param ProductPageLoadedEvent $event
      * @throws \Exception
      */
     public function onProductPageLoaded(ProductPageLoadedEvent $event): void
     {
-        $this->dumb($event->getPage()->getProduct()->getCustomFields());
+        //$this->dumb($event->getPage()->getProduct()->getCustomFields());
         $weloDeliveryInformation = $this->configuration->getDeliveryInformation($event->getPage()->getProduct());
         $event->getPage()->getProduct()->assign(['weloDeliveryInformation' => $weloDeliveryInformation]);
+        //$this->dumb($weloDeliveryInformation);
     }
-    
+
     /**
      * Helper method for debugging
      * @param $data

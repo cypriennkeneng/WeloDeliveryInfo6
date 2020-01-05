@@ -15,16 +15,17 @@ use Shopware\Core\System\SystemConfig\SystemConfigService;
 class Configuration
 {
     /**
-     * @var \Shopware\Core\System\SystemConfig\SystemConfigService
+     * @var SystemConfigService
      */
     private $systemConfigService;
 
     public const WELO_CONFIG_DOMAIN = 'WeloDeliveryInfo6.config.';
 
-    const WELODeliveryInfo6DATA = 'WeloDeliveryInfo6Data';
-    const WELODeliveryInfo6COLOR = 'WeloDeliveryInfo6Color';
-    const WELODeliveryInfo6MARINGINTOP = 'WeloDeliveryInfo6MarginTop';
-    const WELODeliveryInfo6FONTSIZE = 'WeloDeliveryInfo6FontSize';
+    const WELODELIVERYINFOACTIVATED = 'WeloDeliveryInfoActivated';
+    const WELODELIVERYINFODATA = 'WeloDeliveryInfoData';
+    const WELODELIVERYINFOCOLOR = 'WeloDeliveryInfoColor';
+    const WELODELIVERYINFOMARINGINTOP = 'WeloDeliveryInfoMarginTop';
+    const WELODELIVERYINFOFONTSIZE = 'WeloDeliveryInfoFontSize';
     const DEFAULTCOLOR = '#2ecc71';
     const DEFAULTMARGIN = 15;
     const DEFAULTFONTSIZE = 13;
@@ -32,14 +33,14 @@ class Configuration
     /**
      * Configuration constructor.
      *
-     * @param \Shopware\Core\System\SystemConfig\SystemConfigService $systemConfigService
+     * @param SystemConfigService $systemConfigService
      */
     public function __construct(SystemConfigService $systemConfigService) {
         $this->systemConfigService = $systemConfigService;
     }
 
     /**
-     * @param \Shopware\Core\Content\Product\SalesChannel\SalesChannelProductEntity $productEntity
+     * @param SalesChannelProductEntity $productEntity
      * @return array|string
      * @throws \Exception
      */
@@ -50,18 +51,21 @@ class Configuration
             return [];
         }
 
-        $customFields = $productEntity->getCustomFields();
+        //$customFields = $productEntity->getCustomFields();
+        $customFields = $productEntity->getExtension('welo_delivery_information');
 
-        $customFields['welo']['welo_delivery_information'];
-        $this->dumb($productEntity->getId());
 
+        //$customFields['welo']['welo_delivery_information'];
 
         if (true === empty($deliveryData)) {
-            $deliveryData = $this->getConfigByKey(self::WELODeliveryInfo6DATA);
+            $deliveryData = $this->getConfigByKey(self::WELODELIVERYINFODATA);
             $deliveryData = array_unique(array_filter(explode(PHP_EOL, trim($deliveryData))));
         }
 
-        return $deliveryData;
+        return [
+         'active' => $this->getConfigByKey(self::WELODELIVERYINFOACTIVATED),
+         'deliveryData' =>   $deliveryData
+        ];
     }
 
     /**
