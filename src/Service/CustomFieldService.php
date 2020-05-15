@@ -2,15 +2,16 @@
 
 namespace Welo\DeliveryInfo6\Service;
 
-use Exception;
 use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
-use Shopware\Core\Framework\Plugin\Context\ActivateContext;
-use Shopware\Core\Framework\Plugin\Context\DeactivateContext;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\ContainsFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\IdSearchResult;
 use Shopware\Core\Framework\Plugin\Context\InstallContext;
 use Shopware\Core\Framework\Plugin\Context\UninstallContext;
-use Shopware\Core\Framework\Plugin\Context\UpdateContext;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\System\CustomField\CustomFieldTypes;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -28,132 +29,127 @@ class CustomFieldService
 
     /** @var string */
     protected $productFieldId;
+    /**
+     * @var EntityRepositoryInterface
+     */
+    private $customFieldRepository;
 
     /**
      * CustomFieldService constructor.
      *
      * @param ContainerInterface $container
-     * @param EntityRepository   $customFieldSetRepository
+     * @param EntityRepositoryInterface $customFieldRepository
+     * @param EntityRepositoryInterface $customFieldSetRepository
      */
     public function __construct(
         $container,
-        EntityRepository $customFieldSetRepository
+        EntityRepositoryInterface $customFieldRepository,
+        EntityRepositoryInterface $customFieldSetRepository
     ) {
         $this->container = $container;
         $this->customFieldSetRepository = $customFieldSetRepository;
+        $this->customFieldRepository = $customFieldRepository;
         $this->customFieldSetId = Uuid::randomHex();
         $this->productFieldId = Uuid::randomHex();
     }
 
     public function install(InstallContext $context): void
     {
-        $this->upsertCustomField($context->getContext());
-    }
-
-    public function update(UpdateContext $context): void
-    {
-        $this->upsertCustomField($context->getContext());
+        $this->addCustomFields($context->getContext());
     }
 
     public function uninstall(UninstallContext $context): void
     {
-        $this->deactivateCustomField($context->getContext());
+        $this->removeCustomFields($context->getContext());
     }
 
-    public function activate(ActivateContext $context): void
+    private function addCustomFields(Context $context): void
     {
-        $this->upsertCustomField($context->getContext());
-    }
+        $customFieldIds = $this->getCustomFieldIds($context);
 
-    public function deactivate(DeactivateContext $context): void
-    {
-        $this->deactivateCustomField($context->getContext());
-    }
+        if ($customFieldIds->getTotal() !== 0) {
+            return;
+        }
 
-    public function upsertCustomField(Context $context)
-    {
-        try {
-            $this->customFieldSetRepository->upsert([[
-                 'id' => $this->customFieldSetId,
-                 'name' => 'welo',
-                 'config' => [
-                     'label' => [
-                         'de-DE' => 'Lieferinformationen',
-                         'en-GB' => 'Delivery information',
-                         'fr-FR' => 'Informations sur la livraison'
-                     ],
-                     'translated' => true
-                 ],
-                'customFields' => [
-                    [
-                        'id' => $this->productFieldId,
-                        'name' => 'welo_delivery_information',
-                        'type' => CustomFieldTypes::TEXT,
-                        'config' => [
-                            'componentName' => 'sw-field',
-                            'customFieldType' => CustomFieldTypes::TEXT,
-                            'customFieldPosition' => 1,
-                            'label' => [
-                                'en-GB' => 'Delivery information',
-                                'de-DE' => 'Lieferinformationen',
-                                'fr-FR' => 'Informations sur la livraison'
-                            ]
-                        ],
-                        'active' => true
-                    ]
+        $this->customFieldSetRepository->create([[
+            'id' => $this->customFieldSetId,
+            'name' => 'welo',
+            'config' => [
+                'label' => [
+                    'de-DE' => 'Lieferinformationen',
+                    'en-GB' => 'Delivery information',
+                    'fr-FR' => 'Informations sur la livraison'
                 ],
-                'relations' => [
-                    [
-                        'id' => $this->productFieldId,
-                        'entityName' => $this->container->get(ProductDefinition::class)->getEntityName()
-                    ]
+                'translated' => true
+            ],
+            'relations' => [
+                [
+                    'id' => $this->productFieldId,
+                    'entityName' => $this->container->get(ProductDefinition::class)->getEntityName()
                 ]
-            ]], $context);
-        } catch (Exception $e) {
-            // @todo Handle Exception
-        }
+            ],
+            'customFields' => [
+                [
+                    'id' => $this->productFieldId,
+                    'name' => 'welo_delivery_information',
+                    'type' => CustomFieldTypes::TEXT,
+                    'config' => [
+                        'componentName' => 'sw-text',
+                        'customFieldType' => 'text',
+                        'customFieldPosition' => 1,
+                        'label' => [
+                            'en-GB' => 'Delivery information',
+                            'de-DE' => 'Lieferinformationen',
+                            'fr-FR' => 'Informations sur la livraison'
+                        ]
+                    ],
+                    'active' => true
+                ]
+            ]
+        ]], $context);
     }
 
-    public function deactivateCustomField(Context $context)
+    private function removeCustomFields(Context $context)
     {
-        try {
-            $this->customFieldSetRepository->upsert([[
-                 'id' => $this->customFieldSetId,
-                 'name' => 'welo',
-                 'config' => [
-                     'label' => [
-                         'de-DE' => 'Lieferinformationen',
-                         'en-GB' => 'Delivery information',
-                         'fr-FR' => 'Informations sur la livraison'
-                     ]
-                 ],
-                 'customFields' => [
-                     [
-                         'id' => $this->productFieldId,
-                         'name' => 'welo_delivery_information',
-                         'type' => CustomFieldTypes::TEXT,
-                         'config' => [
-                             'componentName' => 'sw-field',
-                             'customFieldType' => CustomFieldTypes::TEXT,
-                             'customFieldPosition' => 1,
-                             'label' => [
-                                 'en-GB' => 'Delivery information',
-                                 'de-DE' => 'Lieferinformationen',
-                                 'fr-FR' => 'Informations sur la livraison'
-                             ]
-                         ],
-                         'active' => false
-                     ]
-                 ],
-                 'relations' => [
-                     [
-                         'id' => $this->productFieldId,
-                         'entityName' => $this->container->get(ProductDefinition::class)->getEntityName()
-                     ]
-                 ]
-             ]], $context);
-        } catch (Exception $e) {
-            // @todo Handle Exception
+        $customFieldIds = $this->getCustomFieldIds($context);
+
+        if ($customFieldIds->getTotal() == 0) {
+            return;
         }
+
+        $ids = array_map(static function ($id) {
+            return ['id' => $id];
+        }, $customFieldIds->getIds());
+
+        $this->customFieldRepository->delete($ids, $context);
+
+
+        $customFieldSetIds = $this->getCustomFieldSetIds($context);
+
+        if ($customFieldSetIds->getTotal() == 0) {
+            return;
+        }
+
+        $ids = array_map(static function ($id) {
+            return ['id' => $id];
+        }, $customFieldSetIds->getIds());
+
+        $this->customFieldSetRepository->delete($ids, $context);
+    }
+
+    private function getCustomFieldIds(Context $context): IdSearchResult
+    {
+        $criteria = new Criteria();
+        $criteria->addFilter(new ContainsFilter('name', 'welo'));
+
+        return $this->customFieldRepository->searchIds($criteria, $context);
+    }
+
+    private function getCustomFieldSetIds(Context $context): IdSearchResult
+    {
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('name', 'welo_delivery_information'));
+
+        return $this->customFieldSetRepository->searchIds($criteria, $context);
     }
 }
